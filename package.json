@@ -27,20 +27,25 @@
     "@electron-forge/plugin-fuses": "^7.8.1",
     "@electron-forge/plugin-vite": "^7.8.1",
     "@electron/fuses": "^1.8.0",
+    "@tailwindcss/cli": "^4.0.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/vite": "^4.1.11",
+    "@types/electron-squirrel-startup": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-vue": "^5.2.4",
     "@vue/compiler-sfc": "^3.5.17",
     "electron": "37.2.3",
+    "electron-squirrel-startup": "^1.0.1",
     "eslint": "^8.57.1",
     "eslint-plugin-import": "^2.32.0",
+    "tailwindcss": "^4.1.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "vite": "^5.4.19",
     "vue-tsc": "^3.0.3"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1",
     "vue": "^3.5.17"
   }
 }
