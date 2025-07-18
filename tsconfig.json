@@ -1,15 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "commonjs",
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "outDir": "dist",
-    "moduleResolution": "node",
-    "resolveJsonModule": true
+    "compilerOptions": {
+      "target": "ESNext",
+      "module": "ESNext",                      // <-- necessário para ESM moderno
+      "moduleResolution": "bundler",          // <-- corrige o erro do plugin-vue
+      "allowJs": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "baseUrl": ".",
+      "outDir": "dist",
+      "resolveJsonModule": true,
+      "types": ["vite/client"]                // <-- adiciona tipos úteis do Vite
+    }
   }
-}
