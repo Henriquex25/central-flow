@@ -7,9 +7,16 @@ class PluginManager implements PluginManagerContract {
 
     async loadInternalPlugins(pluginPaths: string[]): Promise<void> {
         for (const p of pluginPaths) {
-            const plugin = await import(`../plugins/${p}/index.ts`);
-            this.plugins.push(plugin.default);
+            try {
+                const plugin = await import(`../plugins/${p}/index.ts`);
+                this.plugins.push(plugin.default);
+            } catch (error) {
+                console.error(`❌ Erro ao carregar plugin interno: ${p}`, error);
+            }
         }
+
+        console.log(`✔ Plugins internos carregados: ${this.plugins.map(p => p.name).join(", ")}`);
+
     }
 
     loadExternalPlugins(dirPath: string): void {

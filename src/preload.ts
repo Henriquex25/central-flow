@@ -9,5 +9,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
         return ipcRenderer.invoke("search", query);
     },
     invokeAction: (resultId: string): Promise<void> => ipcRenderer.invoke("execute-action", resultId),
-    resizeWindow: (height: number) => ipcRenderer.send("resize-window", height),
+    resizeWindow: (height: number | undefined) => ipcRenderer.send("resize-window", height),
+    showMainWindow: (callback: (results: any) => void) =>
+        ipcRenderer.on("showing-main-window", (_event, results) => callback(results)),
+    hideMainWindow: (callback: () => void) => ipcRenderer.on("hide-main-window", (_event) => callback()),
 });

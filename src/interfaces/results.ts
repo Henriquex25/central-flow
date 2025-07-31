@@ -1,4 +1,4 @@
-import { PluginResult, PluginManagerContract } from "./plugin";
+import { PluginResult } from "./plugin";
 
 export interface ResultManagerContract {
     search(query: string): Promise<SearchResultDTO[]>;

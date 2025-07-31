@@ -6,47 +6,64 @@ import { useResultManager } from "./core/result-manager";
 const pluginManager = usePluginManager();
 const resultManager = useResultManager();
 
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
-  app.quit();
+    app.quit();
 }
 
-function handleResizeWindow(event: any, height: number) {
+const MAIN_WIN_WIDTH = 600;
+// const MAIN_WIN_HEIGHT = 120;
+const MAIN_WIN_HEIGHT = 320;
+
+function handleResizeWindow(event: any, height: number | undefined = MAIN_WIN_HEIGHT): void {
     const webContents = event.sender;
     const mainWindow = BrowserWindow.fromWebContents(webContents);
     if (mainWindow) {
-        mainWindow.setSize(600, height);
+        mainWindow.setSize(MAIN_WIN_WIDTH, height);
     }
+}
+
+async function showMainWindow(mainWindow: BrowserWindow): Promise<void> {
+    console.log("Showing main window...");
+
+    const defaultSearchResults = await resultManager.search("", "window-list");
+
+    console.log("Default search results:", defaultSearchResults);
+    mainWindow.webContents.send("showing-main-window", defaultSearchResults);
+    mainWindow.show();
+    mainWindow.focus();
+}
+
+function hideMainWindow(mainWindow: BrowserWindow): void {
+    mainWindow.hide();
+    mainWindow.webContents.send("hide-main-window");
 }
 
 const createWindow = () => {
     const primaryDisplay = screen.getPrimaryDisplay();
     const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
 
-    const mainWinWidth = 600;
-    const mainWinHeight = 120;
-    // const mainWinHeight = 300;
-
-    const x = Math.round((screenWidth - mainWinWidth) / 2);
-    const y = Math.round(screenHeight / 4);
+    const x = Math.round((screenWidth - MAIN_WIN_WIDTH) / 2);
+    const y = Math.round(screenHeight / 5);
 
     // Create the browser window.
     const mainWindow = new BrowserWindow({
-        width: mainWinWidth,
-        height: mainWinHeight,
+        width: MAIN_WIN_WIDTH,
+        height: MAIN_WIN_HEIGHT,
         frame: false, // Remove a borda e o topo
         transparent: true, // Deixa o fundo transparente
         backgroundColor: "#00FFFFFF",
         alwaysOnTop: true,
         resizable: false,
         movable: false,
+        show: false, // Start hidden
+        icon: path.join(__dirname, "../assets/images/icon.png"),
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
         },
     });
 
     // Set the position of the window
-    mainWindow.setBounds({ x, y, width: mainWinWidth, height: mainWinHeight });
+    mainWindow.setBounds({ x, y, width: MAIN_WIN_WIDTH, height: MAIN_WIN_HEIGHT });
 
     // and load the index.html of the app.
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
@@ -56,20 +73,19 @@ const createWindow = () => {
     }
 
     // Open the DevTools.
-      mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
 
     mainWindow.on("blur", () => {
-        mainWindow.hide();
+        hideMainWindow(mainWindow);
     });
 
     globalShortcut.register("CommandOrControl+Space", () => {
         if (mainWindow.isVisible()) {
-            mainWindow.hide();
+            hideMainWindow(mainWindow);
             return;
         }
 
-        mainWindow.show();
-        // mainWindow.send("showing-window");
+        showMainWindow(mainWindow);
     });
 };
 
@@ -78,7 +94,7 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-    await pluginManager.loadInternalPlugins(["window-list"]);
+    await pluginManager.loadInternalPlugins(["window-list", "app-launcher"]);
 
     // Plugins externos do usuário (~/.config/central-flow/plugins)
     // const userPluginDir = path.join(process.env.HOME || "", ".config", "central-flow", "plugins");

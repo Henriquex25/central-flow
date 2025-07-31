@@ -8,6 +8,7 @@ export interface Plugin {
     id: string;
     name: string;
     description?: string;
+    priority?: number; // Prioridade do plugin (opcional, padrão é 0)
     search: (query: string) => Promise<PluginResult[]>;
 }
 
